@@ -21,11 +21,66 @@ Frequency Modulation (FM) is a method of transmitting information over a carrier
 6.	Plot the Signals: Use Matplotlib to plot the message signal, carrier signal, and modulated signal.
 
 ### PROGRAM
-
-
+```
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.signal import hilbert
+    
+    Am = 8.7
+    fm = 221.6
+    fs = 21300
+    Ac = 17.4
+    fc = 2216
+    b = 6
+    
+    t = np.arange(0, 2/fm, 1/fs)
+    
+    m = Am * np.cos(2 * np.pi * fm * t)
+    c = Ac * np.cos(2 * np.pi * fc * t)
+    s = Ac * np.cos(2 * np.pi * fc * t + b * np.sin(2 * np.pi * fm * t))
+    
+    
+    ds = np.diff(s)
+    analytic_signal = hilbert(ds) 
+    envelope = np.abs(analytic_signal) 
+    demod = envelope - np.mean(envelope)  
+    demod = demod / np.max(np.abs(demod)) * Am 
+    
+    plt.figure(figsize=(10,8))
+    
+    plt.subplot(4,1,1)
+    plt.plot(t, m)
+    plt.title("Message Signal")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Amplitude")
+    
+    plt.subplot(4,1,2)
+    plt.plot(t, c)
+    plt.title("Carrier Signal")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Amplitude")
+    
+    plt.subplot(4,1,3)
+    plt.plot(t, s)
+    plt.title("Frequency Modulated Signal (FM)")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Amplitude")
+    
+    plt.subplot(4,1,4)
+    plt.plot(t[:-1], demod)  # ds shortens length by 1
+    plt.title("Demodulated Signal (Recovered Message)")
+    plt.xlabel("Time (s)")
+    plt.ylabel("Amplitude")
+    
+    plt.tight_layout()
+    plt.show()
+```
 ### TABULATION
 
-### OUTPUT
-   
-### RESULT
+![WhatsApp Image 2025-11-21 at 23 02 12](https://github.com/user-attachments/assets/865ffbf8-36eb-4e43-bf4b-5c3aaa6797f0)
 
+### OUTPUT
+![WhatsApp Image 2025-11-21 at 23 03 20](https://github.com/user-attachments/assets/7b3ff930-90d2-47f6-803a-51bc85d89dac)
+
+### RESULT
+The message signal, carrier signal, and frequency modulated (FM) signal will be displayed in separate plots. The modulated signal will show frequency variations corresponding to the amplitude of the message signal.
